@@ -80,8 +80,6 @@ var (
 
 			}
 
-			console.Log("Dependencies", appState.Dependencies)
-
 			if len(appState.Dependencies) == 0 {
 				console.Log("No Dependabot pull requests found.")
 				os.Exit(0)
