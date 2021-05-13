@@ -11,13 +11,13 @@ Currently only patch versions are handled however we plan to make it configurabl
 Run this from your CLI to install dependabotbot:
 
 ```
-curl -o- -s https://raw.githubusercontent.com/cmgriffing/git-machine/main/install.sh | bash
+curl -o- -s https://raw.githubusercontent.com/cmgriffing/dependabotbot/main/install.sh | bash
 ```
 
 You can also pass in a directory already on your PATH.
 
 ```
-curl -o- -s https://raw.githubusercontent.com/cmgriffing/git-machine/main/install.sh | bash -s -- -b /usr/local/bin/
+curl -o- -s https://raw.githubusercontent.com/cmgriffing/dependabotbot/main/install.sh | bash -s -- -b /usr/local/bin/
 ```
 
 ## Usage
