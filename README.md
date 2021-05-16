@@ -20,6 +20,36 @@ You can also pass in a directory already on your PATH.
 curl -o- -s https://raw.githubusercontent.com/cmgriffing/dependabotbot/main/install.sh | bash -s -- -b /usr/local/bin/
 ```
 
+## Github Credentials
+
+You will need to get a PAT (Personal Access Token). The permissions only need to be able to access your repos.
+
+You only need to give it repo access.
+
+![](./readme-assets/permissions.png)
+
+Once you have that token, you can use the cli arguments:
+
+```sh
+dependabotbot --username GITHUB_USERNAME --token GITHUB_TOKEN
+```
+
+or you can use a JSON config file in your home folder (`~/.dependabotbot`).
+
+```json
+{
+  "username": "GITHUB_USERNAME",
+  "token": "GITHUB_TOKEN"
+}
+```
+
+You can also pass a path to your config if you wish to keep it elsewhere:
+
+```sh
+dependabotbot --config ~/.YOUR_CONFIG
+```
+
+
 ## Usage
 
 Just one command for now.

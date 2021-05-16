@@ -70,7 +70,7 @@ func ShowDependencies(appState *data.AppState) []string {
 			return make([]string, 0)
 		}
 
-		if index == len(appState.Dependencies) {
+		if index == len(appState.Dependencies)-len(selections) {
 			break
 		}
 

@@ -124,11 +124,14 @@ func Execute() {
 	rootCmd.PersistentFlags().String("token", "", "your Github personal access token")
 	viper.BindPFlag("token", rootCmd.PersistentFlags().Lookup("token"))
 
+	rootCmd.PersistentFlags().String("config", "", "a file path to your dependabotbot config")
+	viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
+
 	rootCmd.Execute()
 }
 
 func initConfig() {
-	if configFile != "" {
+	if viper.GetString("config") != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(configFile)
 	} else {
