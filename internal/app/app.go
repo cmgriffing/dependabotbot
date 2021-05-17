@@ -78,8 +78,14 @@ func FetchInitialData(appState *data.AppState, callbacks FetchInitialDataCallbac
 				continue
 			}
 
-			if fromVersion.Major == toVersion.Major && fromVersion.Minor == toVersion.Minor {
-				versionIsCloseEnough = true
+			if appState.VersionSelector == "minor" {
+				if fromVersion.Major == toVersion.Major {
+					versionIsCloseEnough = true
+				}
+			} else {
+				if fromVersion.Major == toVersion.Major && fromVersion.Minor == toVersion.Minor {
+					versionIsCloseEnough = true
+				}
 			}
 
 			pullRequest.Repository = repos[pullRequestData.repoIndex]

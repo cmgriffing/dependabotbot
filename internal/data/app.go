@@ -12,6 +12,7 @@ type AppState struct {
 	SkippedPullRequests             []PullRequest
 	SkippedPullRequestsByDependency map[string][]PullRequest
 	// SkippedNotificationsByDependency map[string][]Notification
+	VersionSelector string
 }
 
 type User struct {

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/cmgriffing/dependabotbot/internal/app"
+	"github.com/cmgriffing/dependabotbot/internal/console"
 	"github.com/cmgriffing/dependabotbot/internal/data"
 	"github.com/cmgriffing/dependabotbot/internal/http"
 	"github.com/manifoldco/promptui"
@@ -21,6 +22,30 @@ func ShowIntro(appState *data.AppState) *data.AppState {
 		pterm.NewLettersFromStringWithStyle("bot", pterm.NewStyle(pterm.FgLightCyan)),
 	).Srender()
 	pterm.DefaultCenter.Print(dependabotSubtitle)
+
+	// ----------------
+	var result string
+	var err error
+
+	items := make([]string, 2)
+	items[0] = "patch"
+	items[1] = "minor"
+
+	prompt := promptui.Select{
+		Label: "Select Dependencies",
+		Items: items,
+	}
+
+	_, result, err = prompt.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		console.Error()
+	}
+
+	appState.VersionSelector = result
+
+	// --------------------
 
 	var progressBar *pterm.ProgressbarPrinter
 
