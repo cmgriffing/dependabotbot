@@ -57,6 +57,7 @@ func GetPullRequestsByRepo(appState data.AppState, repositoryName string) []data
 }
 
 func MergePullRequest(appState data.AppState, repositoryName string, pullNumber uint32) {
+
 	url := fmt.Sprintf("https://api.github.com/repos/%v/pulls/%v/merge", repositoryName, pullNumber)
 
 	_, err := util.MakeHttpRequest(appState, "PUT", url, nil)

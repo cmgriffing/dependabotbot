@@ -28,7 +28,7 @@ func ShowIntro(appState *data.AppState) *data.AppState {
 		FetchedRepos: func() {
 			progressBar, _ = pterm.DefaultProgressbar.WithTotal(len(appState.Repos)).WithTitle("Fetching Repos").Start()
 		},
-		FetchedRepoPullRequests: func(repo data.Repository, repoIndex int) {
+		FetchedRepoPullRequests: func(repo data.Repository, repoIndex uint32) {
 			progressBar.Increment()
 		},
 	})

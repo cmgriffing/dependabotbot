@@ -11,27 +11,32 @@ import (
 
 type workerRepoData struct {
 	repo      data.Repository
-	repoIndex int
+	repoIndex uint32
+}
+
+type workerPullRequestData struct {
+	pullRequests []data.PullRequest
+	repoIndex    uint32
 }
 
 type workerData struct {
 	appState  data.AppState
 	callbacks FetchInitialDataCallbacks
 	jobs      <-chan workerRepoData
-	results   chan<- []data.PullRequest
+	results   chan<- workerPullRequestData
 }
 
 func worker(workerData workerData) {
 	for repoData := range workerData.jobs {
 		pullRequests := http.GetPullRequestsByRepo(workerData.appState, repoData.repo.FullName)
 		workerData.callbacks.FetchedRepoPullRequests(repoData.repo, repoData.repoIndex)
-		workerData.results <- pullRequests
+		workerData.results <- workerPullRequestData{pullRequests, repoData.repoIndex}
 	}
 }
 
 type FetchInitialDataCallbacks struct {
 	FetchedRepos            func()
-	FetchedRepoPullRequests func(data.Repository, int)
+	FetchedRepoPullRequests func(data.Repository, uint32)
 }
 
 func FetchInitialData(appState *data.AppState, callbacks FetchInitialDataCallbacks) *data.AppState {
@@ -46,22 +51,22 @@ func FetchInitialData(appState *data.AppState, callbacks FetchInitialDataCallbac
 	appState.SkippedPullRequestsByDependency = make(map[string][]data.PullRequest)
 
 	repoJobs := make(chan workerRepoData, len(repos))
-	repoResults := make(chan []data.PullRequest, len(repos))
+	repoResults := make(chan workerPullRequestData, len(repos))
 
 	for workerIndex := 0; workerIndex < 6; workerIndex++ {
 		go worker(workerData{*appState, callbacks, repoJobs, repoResults})
 	}
 
 	for repoIndex, repo := range repos {
-		repoJobs <- workerRepoData{repo, repoIndex}
+		repoJobs <- workerRepoData{repo, uint32(repoIndex)}
 	}
 	close(repoJobs)
 
 	for repoIndex := 0; repoIndex < len(repos); repoIndex++ {
 
-		pullRequests := <-repoResults
+		pullRequestData := <-repoResults
 
-		for _, pullRequest := range pullRequests {
+		for _, pullRequest := range pullRequestData.pullRequests {
 
 			versionIsCloseEnough := false
 
@@ -77,7 +82,7 @@ func FetchInitialData(appState *data.AppState, callbacks FetchInitialDataCallbac
 				versionIsCloseEnough = true
 			}
 
-			pullRequest.Repository = repos[repoIndex]
+			pullRequest.Repository = repos[pullRequestData.repoIndex]
 
 			if versionIsCloseEnough {
 				if appState.PullRequestsByDependency[pullRequest.Dependency] == nil {
