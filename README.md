@@ -1,3 +1,5 @@
+![](./readme-assets/logo.png)
+
 # Dependabotbot
 
 Have you been the victim of a lodash update? Has your notification page in Github been assaulted by needing to update a patch version of hosted-git-info?
