@@ -18,6 +18,7 @@ func MakeHttpRequest(appState data.AppState, httpMethod string, url string, payl
 	}
 
 	request.Header.Add("Authorization", fmt.Sprintf("Basic %v", appState.EncodedAuth))
+	request.Header.Add("Accept", "application/vnd.github.v3+json")
 
 	return client.Do(request)
 }

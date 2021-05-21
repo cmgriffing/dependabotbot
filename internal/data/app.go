@@ -12,7 +12,9 @@ type AppState struct {
 	SkippedPullRequests             []PullRequest
 	SkippedPullRequestsByDependency map[string][]PullRequest
 	// SkippedNotificationsByDependency map[string][]Notification
-	VersionSelector string
+	VersionSelector    string
+	ClearNotifications bool
+	NotificationsByPR  map[string]string
 }
 
 type User struct {
@@ -38,7 +40,12 @@ type PullRequest struct {
 	Repository  Repository `json:"-"`
 }
 
+type NotificationSubject struct {
+	Url string `json:"url"`
+}
+
 type Notification struct {
-	Id         uint32     `json:"id"`
-	Repository Repository `json:"repository"`
+	Id         string              `json:"id"`
+	Repository Repository          `json:"repository"`
+	Subject    NotificationSubject `json:"subject"`
 }

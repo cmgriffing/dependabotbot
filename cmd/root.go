@@ -94,17 +94,14 @@ var (
 				console.Error("No selected repositories")
 			}
 
+			// Need to have some notifications to actually clear
+			// if interactive {
+			// 	shouldClearNotifications := internal.ShowNotificationsPrompt(appState)
+			// 	appState.ClearNotifications = shouldClearNotifications == "Yes"
+			// }
+
 			if interactive {
 				internal.ShowMergeStatus(appState, selections)
-			}
-
-			if interactive {
-				// internal.ShowNotificationsPrompt()
-			}
-
-			shouldHandleNotifications := true
-			if shouldHandleNotifications {
-				// internal.HandleNotificationPrompt()
 			}
 
 			// internal.ShowResults()

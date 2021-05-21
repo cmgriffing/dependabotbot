@@ -13,6 +13,7 @@ import (
 )
 
 func ShowIntro(appState *data.AppState) *data.AppState {
+
 	dependabotTitle, _ := pterm.DefaultBigText.WithLetters(
 		pterm.NewLettersFromStringWithStyle("Dependabot", pterm.NewStyle(pterm.FgLightBlue)),
 	).Srender()
@@ -107,7 +108,36 @@ func ShowDependencies(appState *data.AppState) []string {
 	return selections
 }
 
+func ShowNotificationsPrompt(appState *data.AppState) string {
+
+	// ----------------
+	var result string
+	var err error
+
+	items := make([]string, 2)
+	items[0] = "No"
+	items[1] = "Yes"
+
+	prompt := promptui.Select{
+		Label: "Clear related notifications?",
+		Items: items,
+	}
+
+	_, result, err = prompt.Run()
+
+	if err != nil {
+		fmt.Printf("Prompt failed %v\n", err)
+		console.Error()
+	}
+
+	return result
+	// --------------------
+}
+
 func ShowMergeStatus(appState *data.AppState, selections []string) {
+	if appState.ClearNotifications {
+		appState.NotificationsByPR = http.GetNotifications(appState)
+	}
 
 	pullRequests := make([]data.PullRequest, 0)
 
@@ -119,24 +149,18 @@ func ShowMergeStatus(appState *data.AppState, selections []string) {
 
 	for _, pullRequest := range pullRequests {
 		http.MergePullRequest(*appState, pullRequest.Repository.FullName, pullRequest.Number)
+
+		notificationKey := fmt.Sprintf("%v%v", pullRequest.Repository.FullName, pullRequest.Number)
+		notificationId := appState.NotificationsByPR[notificationKey]
+		if appState.ClearNotifications && notificationId != "" {
+			http.MarkNotificationAsRead(appState, fmt.Sprint(pullRequest.Number))
+		}
 		progressBar.Increment()
 		time.Sleep(time.Millisecond * 350)
 	}
 
 }
 
-func HandleUserSelection() {
-
-}
-
-func ShowNotificationsPrompt() {
-
-}
-
-func HandleNotificationPrompt() {
-
-}
-
-func ShowResults() {
+func ShowResults(appState *data.AppState) {
 
 }
