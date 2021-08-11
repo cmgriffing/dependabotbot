@@ -84,6 +84,10 @@ func ShowDependencies(appState *data.AppState) []string {
 			}
 		}
 
+		if len(itemLabels) == 0 {
+			break
+		}
+
 		prompt := promptui.Select{
 			Label: "Select Dependencies",
 			Items: append(itemLabels, "Done"),
@@ -96,7 +100,7 @@ func ShowDependencies(appState *data.AppState) []string {
 			return make([]string, 0)
 		}
 
-		if index == len(appState.Dependencies)-len(selections) {
+		if index >= len(appState.Dependencies)-len(selections) {
 			break
 		}
 
@@ -137,6 +141,7 @@ func ShowNotificationsPrompt(appState *data.AppState) string {
 func ShowMergeStatus(appState *data.AppState, selections []string) {
 	if appState.ClearNotifications {
 		appState.NotificationsByPR = http.GetNotifications(appState)
+
 	}
 
 	pullRequests := make([]data.PullRequest, 0)
@@ -144,6 +149,8 @@ func ShowMergeStatus(appState *data.AppState, selections []string) {
 	for _, selection := range selections {
 		pullRequests = append(pullRequests, appState.PullRequestsByDependency[selection]...)
 	}
+
+	failedMarkedNotifications := make([]string, 0)
 
 	progressBar, _ := pterm.DefaultProgressbar.WithTotal(len(pullRequests)).WithTitle("Merging Repos").Start()
 
@@ -153,10 +160,21 @@ func ShowMergeStatus(appState *data.AppState, selections []string) {
 		notificationKey := fmt.Sprintf("%v%v", pullRequest.Repository.FullName, pullRequest.Number)
 		notificationId := appState.NotificationsByPR[notificationKey]
 		if appState.ClearNotifications && notificationId != "" {
-			http.MarkNotificationAsRead(appState, fmt.Sprint(pullRequest.Number))
+			success := http.MarkNotificationAsRead(appState, fmt.Sprint(notificationId))
+			if !success {
+				failedMarkedNotifications = append(failedMarkedNotifications, "failed")
+			}
 		}
 		progressBar.Increment()
 		time.Sleep(time.Millisecond * 350)
+	}
+
+	if len(failedMarkedNotifications) != 0 {
+		notificationString := "notifications"
+		if len(failedMarkedNotifications) == 1 {
+			notificationString = "notification"
+		}
+		console.Log(fmt.Sprintf("There was an error trying to mark %v %v as read", len(failedMarkedNotifications), notificationString))
 	}
 
 }

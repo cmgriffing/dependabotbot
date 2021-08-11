@@ -44,19 +44,15 @@ func GetNotifications(appState *data.AppState) map[string]string {
 
 }
 
-func MarkNotificationAsRead(appState *data.AppState, threadId string) {
+func MarkNotificationAsRead(appState *data.AppState, threadId string) bool {
 
 	url := fmt.Sprintf("https://api.github.com/notifications/threads/%v", threadId)
-
 	response, err := util.MakeHttpRequest(*appState, "PATCH", url, nil)
 
-	if err != nil {
-		console.Error("Notifications fetch failed", response)
+	if err != nil || response.StatusCode > 299 {
+		return false
 	}
 
-	defer response.Body.Close()
-	body, _ := ioutil.ReadAll(response.Body)
-
-	console.Log("Notifications marked as read", string(body))
+	return true
 
 }

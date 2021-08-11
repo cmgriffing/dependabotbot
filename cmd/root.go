@@ -95,10 +95,10 @@ var (
 			}
 
 			// Need to have some notifications to actually clear
-			// if interactive {
-			// 	shouldClearNotifications := internal.ShowNotificationsPrompt(appState)
-			// 	appState.ClearNotifications = shouldClearNotifications == "Yes"
-			// }
+			if interactive {
+				shouldClearNotifications := internal.ShowNotificationsPrompt(appState)
+				appState.ClearNotifications = shouldClearNotifications == "Yes"
+			}
 
 			if interactive {
 				internal.ShowMergeStatus(appState, selections)
