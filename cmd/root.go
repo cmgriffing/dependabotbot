@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/base64"
+	"fmt"
 	"os"
 
 	"github.com/cmgriffing/dependabotbot/internal"
@@ -109,7 +110,7 @@ var (
 	}
 )
 
-func Execute() {
+func Execute(version string) {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().Bool("interactive", true, "show UI for selecting arguments")
@@ -123,6 +124,17 @@ func Execute() {
 
 	rootCmd.PersistentFlags().String("config", "", "a file path to your dependabotbot config")
 	viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
+
+	var versionCommand = &cobra.Command{
+		Use:   "version",
+		Short: "Print the version number of dependabotbot",
+		Long:  `All software has versions. This is dependabotbot's`,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("dependabotbot %v - No affiliation with dependabot \n", version)
+		},
+	}
+
+	rootCmd.AddCommand(versionCommand)
 
 	rootCmd.Execute()
 }
