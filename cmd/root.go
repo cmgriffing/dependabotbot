@@ -8,7 +8,6 @@ import (
 	"github.com/cmgriffing/dependabotbot/internal"
 	"github.com/cmgriffing/dependabotbot/internal/console"
 	"github.com/cmgriffing/dependabotbot/internal/data"
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -145,7 +144,7 @@ func initConfig() {
 		viper.SetConfigFile(configFile)
 	} else {
 		// Find home directory.
-		home, err := homedir.Dir()
+		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cobra" (without extension).
