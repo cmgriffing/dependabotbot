@@ -7,7 +7,6 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/manifoldco/promptui v0.8.0
-	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/pelletier/go-toml v1.9.0 // indirect
 	github.com/pterm/pterm v0.12.13
